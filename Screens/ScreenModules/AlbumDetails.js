@@ -1,13 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, Image, FlatList} from 'react-native';
+
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import he from 'he';
+import Divider from '../../Components/Helper/Divider';
 
 const AlbumDetails = ({route}) => {
   const {id} = route.params;
-  if (id === '0' || !id) {
-    return null;
-  }
+
+  // Decide which ID to use for the API call
+
   const [album, setAlbum] = useState(null);
   const SAAVN_ALBUM_API = `https://saavn.me/albums?id=${id}`;
 
@@ -16,7 +25,7 @@ const AlbumDetails = ({route}) => {
       .then(response => response.json())
       .then(data => {
         setAlbum(data.data);
-        console.log('songssss', data.data);
+        console.log();
       })
       .catch(error => {
         console.error('Error fetching album:', error);
@@ -29,11 +38,22 @@ const AlbumDetails = ({route}) => {
 
   const renderSong = ({item}) => (
     <View style={styles.songContainer}>
-      <Text numberOfLines={1} style={styles.songTitle}>
-        {he.decode(item.name)}
-      </Text>
-      <Text style={styles.songArtist}>{item.primaryArtists}</Text>
-      <Text style={styles.songArtist}>{item.duration}</Text>
+      <View style={{width: '90%'}}>
+        <Text style={styles.songTitle}>{he.decode(item.name)}</Text>
+        <Text style={styles.songArtist}>{item.primaryArtists}</Text>
+      </View>
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+        }}>
+        <Image
+          style={{
+            width: 40,
+            height: 40,
+          }}
+          source={require('../../Components/assets/Images/play.png')}
+        />
+      </TouchableOpacity>
     </View>
   );
 
@@ -41,40 +61,20 @@ const AlbumDetails = ({route}) => {
     <LinearGradient
       colors={['#BD2D35', '#70252A', '#000000', '#B05D61']}
       style={styles.container}>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          flexDirection: 'row',
-          maxWidth: '100%',
-          alignSelf: 'center',
-        }}>
-        <View
-          style={{
-            alignSelf: 'flex-start',
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
-          }}>
-          <Image
-            source={{uri: album.image[2].link}}
-            style={styles.albumImage}
-          />
-        </View>
-        <View style={{}}>
-          <Text style={styles.albumTitle}>{he.decode(album.name)}</Text>
-          <Text style={styles.text}>Year: {album.year}</Text>
-          <Text style={styles.text}>Release Date: {album.releaseDate}</Text>
-          <Text style={styles.text}>Artist: {album.primaryArtists}</Text>
-          <Text style={styles.text}>duration: {album.duration}</Text>
-        </View>
-      </View>
-      {/* <Text style={styles.text}>duration: {album.duration}</Text> */}
+      <Image source={{uri: album.image[2].link}} style={styles.albumImage} />
+      <Text style={styles.albumTitle}>{he.decode(album.name)}</Text>
+      <Text style={styles.text}>Year: {album.year}</Text>
+      <Text style={styles.text}>Release Date: {album.releaseDate}</Text>
+      <Text style={styles.text}>Artist: {album.primaryArtists}</Text>
+
+      <Divider />
 
       <FlatList
         data={album.songs}
         renderItem={renderSong}
         keyExtractor={song => song.id}
         style={styles.songList}
+        showsVerticalScrollIndicator={false}
       />
     </LinearGradient>
   );
@@ -83,7 +83,7 @@ const AlbumDetails = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
     alignItems: 'center',
   },
   albumImage: {
@@ -91,39 +91,38 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 15,
     marginBottom: 20,
-
+    borderWidth: 1,
     borderColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
   },
   albumTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 10,
     color: 'white',
-
-    width: 219,
+    width: '80%',
+    textAlign: 'center',
   },
   text: {
     fontSize: 18,
     marginBottom: 10,
     color: 'white',
-    width: 219,
   },
   songContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     padding: 10,
     marginVertical: 5,
     borderRadius: 10,
+    flexDirection: 'row',
   },
   songTitle: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'white',
+    width: '100%',
   },
   songArtist: {
     fontSize: 16,
     color: 'rgba(255, 255, 255, 0.7)',
+    width: '80%',
   },
   songList: {
     width: '100%',
