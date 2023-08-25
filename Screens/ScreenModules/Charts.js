@@ -11,7 +11,7 @@ import React, {useState} from 'react';
 
 const charts = ({data}) => {
   const [activeFilter, setActiveFilter] = useState('charts');
-  console.log('data', data);
+  // console.log('data', data);
   const renderChart = ({item}) => (
     <TouchableOpacity
       style={styles.albumContainer}

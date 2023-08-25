@@ -19,7 +19,7 @@ const Album = ({data}) => {
       onPress={() => {
         console.log('Pressed album:', item.name);
         navigation.navigate('AlbumDetails', {id: item.id});
-        console.log('item>>>>..', item);
+        // console.log('item>>>>..', item);
       }}>
       <Image source={{uri: item.image[2].link}} style={styles.albumImage} />
       <Text numberOfLines={2} style={styles.albumTitle}>

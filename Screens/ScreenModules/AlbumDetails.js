@@ -11,8 +11,10 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import he from 'he';
 import Divider from '../../Components/Helper/Divider';
+import {useNavigation} from '@react-navigation/native';
 
 const AlbumDetails = ({route}) => {
+  const navigation = useNavigation();
   const {id} = route.params;
 
   // Decide which ID to use for the API call
@@ -25,7 +27,8 @@ const AlbumDetails = ({route}) => {
       .then(response => response.json())
       .then(data => {
         setAlbum(data.data);
-        console.log();
+        console.log('data.data', data.data.songs[0].duration);
+        console.log('data.data', data.data.songs[0].downloadUrl);
       })
       .catch(error => {
         console.error('Error fetching album:', error);
@@ -43,6 +46,14 @@ const AlbumDetails = ({route}) => {
         <Text style={styles.songArtist}>{item.primaryArtists}</Text>
       </View>
       <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Songplay', {
+            name: item.name,
+
+            downloadUrl: item.downloadUrl[3],
+            image: item.image[2],
+          });
+        }}
         style={{
           justifyContent: 'center',
         }}>
@@ -66,6 +77,7 @@ const AlbumDetails = ({route}) => {
       <Text style={styles.text}>Year: {album.year}</Text>
       <Text style={styles.text}>Release Date: {album.releaseDate}</Text>
       <Text style={styles.text}>Artist: {album.primaryArtists}</Text>
+      <Text style={styles.text}>duration: {album.songs[0].duration}</Text>
 
       <Divider />
 
